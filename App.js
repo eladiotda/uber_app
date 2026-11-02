@@ -1,29 +1,18 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import { colors, spacing } from "./src/theme/colors";
+import { NavigationContainer } from "@react-navigation/native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { RegistrationProvider } from "./src/context/RegistrationContext";
+import RegistrationTabs from "./src/navigation/RegistrationTabs";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>UberClone · Conductor</Text>
-      <Text style={styles.subtitle}>
-        Proyecto base listo. El registro del conductor se construye en los
-        siguientes commits.
-      </Text>
+    <SafeAreaProvider>
+      <RegistrationProvider>
+        <NavigationContainer>
+          <RegistrationTabs />
+        </NavigationContainer>
+      </RegistrationProvider>
       <StatusBar style="dark" />
-    </View>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: spacing * 2,
-    gap: 12,
-  },
-  title: { fontSize: 26, fontWeight: "700", color: colors.text },
-  subtitle: { fontSize: 16, color: colors.muted, textAlign: "center" },
-});
