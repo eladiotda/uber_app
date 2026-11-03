@@ -6,7 +6,7 @@ import {
   parseISODate,
   validatePersonal,
   validateVehicle,
-} from "../theme/utils/validations.js";
+} from "../utils/validations.js";
 
 const TODAY = new Date(2026, 10, 2); // 2 de noviembre de 2026
 
