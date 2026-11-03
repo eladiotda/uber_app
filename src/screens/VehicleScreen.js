@@ -1,5 +1,4 @@
-// Pestaña 2 — Vehículo. La placa se pasa a mayúsculas antes de validar; XL exige mínimo 6 pasajeros.
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text } from 'react-native';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import { useRegistration } from '../context/RegistrationContext';
 import { Banner, Button, SelectField, TextField } from '../components/FormControls';
 import PhotoField from '../components/PhotoField';
@@ -10,12 +9,32 @@ import { colors, spacing } from '../theme/colors';
 const onlyDigits = (text) => text.replace(/\D/g, '');
 
 export default function VehicleScreen({ navigation }) {
-  const { vehicle, errors, revealed, errorFor, updateVehicle, revealErrors } = useRegistration();
+  const {
+    vehicle,
+    errors,
+    revealed,
+    errorFor,
+    updateVehicle,
+    revealErrors,
+    save,
+    saving,
+    saveError,
+    servicesReady,
+    record,
+  } = useRegistration();
   const error = (field) => errorFor('vehicle', field);
+  const personalPending = Object.keys(errors.personal).length;
 
-  const goNext = () => {
+  // Guarda en Firestore; si todo sale bien abre la pestaña Documentos con el resumen.
+  const onSave = async () => {
     revealErrors('vehicle');
-    navigation.navigate('Documents');
+    const ok = await save();
+    if (ok) navigation.navigate('Documents');
+  };
+
+  const reviewPersonal = () => {
+    revealErrors('personal');
+    navigation.navigate('Personal');
   };
 
   return (
@@ -103,7 +122,26 @@ export default function VehicleScreen({ navigation }) {
           error={error('photo')}
         />
 
-        <Button title="Continuar" onPress={goNext} />
+        {/* Guardado del registro completo (pestañas 1 y 2) en Firestore. */}
+        {!servicesReady ? (
+          <Banner tone="warning">Para guardar, configura Firebase en el archivo .env (ver README).</Banner>
+        ) : null}
+        {saveError ? <Banner tone="danger">{saveError}</Banner> : null}
+        {revealed.personal && personalPending > 0 ? (
+          <Pressable onPress={reviewPersonal}>
+            <Banner tone="danger">
+              Datos personales tiene {personalPending} campo(s) pendiente(s).{' '}
+              <Text style={styles.link}>Revisar</Text>
+            </Banner>
+          </Pressable>
+        ) : null}
+
+        <Button
+          title={record ? 'Actualizar registro' : 'Guardar registro'}
+          onPress={onSave}
+          loading={saving}
+          disabled={!servicesReady || saving}
+        />
         <Button title="Volver a Datos personales" kind="secondary" onPress={() => navigation.navigate('Personal')} />
       </ScrollView>
     </KeyboardAvoidingView>
@@ -114,4 +152,5 @@ const styles = StyleSheet.create({
   container: { padding: spacing, paddingBottom: spacing * 3 },
   title: { fontSize: 22, fontWeight: '700', color: colors.text },
   subtitle: { fontSize: 14, color: colors.muted, marginBottom: spacing },
+  link: { fontWeight: '700', textDecorationLine: 'underline' },
 });
