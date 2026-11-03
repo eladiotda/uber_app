@@ -76,3 +76,16 @@ firestore.rules Reglas de seguridad
 ## Uso de IA
 
 Todo uso de herramientas de IA en este proyecto queda registrado en la bitácora [docs/AI_LOG.md](docs/AI_LOG.md).
+
+
+## Paquedes usados
+npx expo install expo-image-picker
+npx expo install expo-image-manipulator
+npx expo install @react-native-community/datetimepicker
+npx expo install @react-native-async-storage/async-storage
+npx expo install @react-navigation/native
+npx expo install @react-navigation/bottom-tabs
+npx expo install react-native-screens
+npx expo install react-native-safe-area-context
+npx expo install react-dom react-native-web
+npm install firebase
