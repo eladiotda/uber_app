@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { colors, radius, spacing } from '../theme/colors';
-import { parseISODate, toISODate } from '../utils/validation';
+import { parseISODate, toISODate } from '../utils/validations';
 
 // Etiqueta + contenido + mensaje de error.
 export function Field({ label, error, hint, children }) {
