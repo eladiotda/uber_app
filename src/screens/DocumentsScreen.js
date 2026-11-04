@@ -59,8 +59,8 @@ export default function DocumentsScreen() {
       )}
 
       <Banner tone="warning">
-        Pestaña 3 · Documentos y pagos (licencia, SOAT, revisión técnico-mecánica, correo de Mercado
-        Pago y términos): se implementa en la segunda entrega.
+        Proximo trabajo colaborativo es en los Documentos y pagos (licencia, SOAT, revisión técnico-mecánica, correo de Mercado
+        Pago y términos): se implementa en la entrega final.
       </Banner>
     </ScrollView>
   );
