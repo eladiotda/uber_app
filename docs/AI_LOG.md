@@ -148,3 +148,20 @@ Registro de cada interacción con herramientas de IA en el proyecto UberClone (v
 - Archivos y commit: `README.md`, `docs/AI_LOG.md` — 8503c1b
 - Verificación: Se comprobó con `git branch --show-current` que la rama es `eladio` y con `test -f docs/AI_LOG.md` que el enlace del README apunta a un archivo existente. [PENDIENTE] Revisar en GitHub que el README y la bitácora se vean bien y que el enlace abra la bitácora.
 - Aprendizaje: [PENDIENTE: lo escribe el integrante]
+
+---
+
+### Entrada #4
+- Fecha: 2026-11-03
+- Integrante: vaner
+- Herramienta: AI assistant using Copilot SDK in VS Code
+- Objetivo: Registrar la corrección manual de imports que tenían discrepancias entre nombres singulares y plurales.
+- Prompt:
+  ```text
+  ok ya solucionamos todos los singulares por plurales que estaban fallando en los archivoa ahora sube esto a la bitácora
+  ```
+- Resumen de la respuesta: Se confirmó que los imports afectados debían coincidir con el nombre plural de los archivos existentes. El integrante informó que realizó las correcciones manualmente.
+- Qué se usó / modificó / descartó: Se modificó únicamente `docs/AI_LOG.md`. El integrante informó haber corregido los imports de singular a plural; no se modificó código de la aplicación en esta interacción.
+- Archivos y commit: `docs/AI_LOG.md` — [PENDIENTE]
+- Verificación: La búsqueda en el código no encontró imports desde `../utils/validation` en singular. [PENDIENTE] Ejecutar la aplicación para confirmar que no quedan errores de resolución de módulos.
+- Aprendizaje: [PENDIENTE: lo escribe el integrante]

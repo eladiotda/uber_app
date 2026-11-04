@@ -46,7 +46,7 @@ export function RegistrationProvider({ children }) {
       .then((language) => {
         if (active && language) setPersonal((current) => ({ ...current, language }));
       })
-      .catch(() => {});
+      .catch(() => { });
 
     if (isFirebaseConfigured) {
       (async () => {
@@ -75,7 +75,7 @@ export function RegistrationProvider({ children }) {
   const updatePersonal = useCallback((field, value) => {
     setPersonal((current) => ({ ...current, [field]: value }));
     setTouched((current) => ({ ...current, [`personal.${field}`]: true }));
-    if (field === 'language') AsyncStorage.setItem(LANGUAGE_KEY, value).catch(() => {});
+    if (field === 'language') AsyncStorage.setItem(LANGUAGE_KEY, value).catch(() => { });
   }, []);
 
   const updateVehicle = useCallback((field, value) => {
