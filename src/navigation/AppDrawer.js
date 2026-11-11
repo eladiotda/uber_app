@@ -6,6 +6,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/HomeScreen';
 import SimulatorScreen from '../screens/SimulatorScreen';
+import EarningsScreen from '../screens/EarningsScreen';
 // [FASE 3 - Andrés] imports de IncomingRequestScreen y TripInProgressScreen
 // [FASE 3 - Vaner]  import de EarningsScreen
 // [FASE 4 - Eladio] import de PaymentSummaryScreen
@@ -37,7 +38,7 @@ export default function AppDrawer() {
     >
       <Drawer.Screen name="Inicio" component={TripFlow} />
       {/* [FASE 4 - Vaner]  Historial */}
-      {/* [FASE 3 - Vaner]  Ganancias */}
+      <Drawer.Screen name="Ganancias" component={EarningsScreen} />
       {/* [FASE 4 - Andrés] Perfil */}
       {/* Solo en desarrollo: crea solicitudes de prueba (no existe la app del pasajero). */}
       {__DEV__ ? <Drawer.Screen name="Pruebas" component={SimulatorScreen} options={{ title: 'Simular solicitud' }} /> : null}
