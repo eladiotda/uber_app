@@ -1,4 +1,4 @@
-// Cobro y resumen del viaje (PDF sección 3): tarifa final, comisión, ganancia neta y estado del pago.import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { markCashPaid, watchTrip } from '../services/tripRepository';

@@ -1,6 +1,7 @@
 // Cálculos de ganancias e historial. Funciones puras: se prueban sin celular (PDF secciones 5 y 6).
 const startOfDay = (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
-const endOfDay = (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);// Rango de fechas de un filtro: 'today' | 'week' (lunes a domingo) | 'month' | 'range'.
+const endOfDay = (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
+// Rango de fechas de un filtro: 'today' | 'week' (lunes a domingo) | 'month' | 'range'.
 export function periodRange(period, today = new Date(), custom = {}) {
   if (period === 'today') return { from: startOfDay(today), to: endOfDay(today) };
   if (period === 'week') {
@@ -34,7 +35,8 @@ export function tripsInRange(trips, { from, to }) {
     return date && (!from || date >= from) && (!to || date <= to);
   });
 }
-// Resumen de un periodo: número de viajes, facturado, comisiones, propinas, ganancia neta y promedio.export function summarizeTrips(trips) {
+// Resumen de un periodo: número de viajes, facturado, comisiones, propinas, ganancia neta y promedio.
+export function summarizeTrips(trips) {
   const totals = trips.reduce(
     (acc, trip) => ({
       count: acc.count + 1,
