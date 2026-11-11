@@ -7,7 +7,9 @@ import { RegistrationProvider, useRegistration } from './src/context/Registratio
 import { TripProvider } from './src/context/TripContext';
 import RootNavigator from './src/navigation/RootNavigator';
 import { colors } from './src/theme/colors';
-// Mientras se carga el registro guardado se muestra un indicador, para no escribir sobre datos viejos.function Root() {
+
+// Mientras se carga el registro guardado se muestra un indicador, para no escribir sobre datos viejos.
+function Root() {
   const { loading } = useRegistration();
   if (loading) {
     return (
@@ -23,6 +25,7 @@ import { colors } from './src/theme/colors';
     </NavigationContainer>
   );
 }
+
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -37,6 +40,7 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
+
 const styles = StyleSheet.create({
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, backgroundColor: colors.background },
   loadingText: { color: colors.muted },
