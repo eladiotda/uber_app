@@ -1,4 +1,3 @@
-// AI-assisted: see docs/AI_LOG.md #N
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
@@ -8,9 +7,7 @@ import { RegistrationProvider, useRegistration } from './src/context/Registratio
 import { TripProvider } from './src/context/TripContext';
 import RootNavigator from './src/navigation/RootNavigator';
 import { colors } from './src/theme/colors';
-
-// Mientras se carga el registro guardado se muestra un indicador, para no escribir sobre datos viejos.
-function Root() {
+// Mientras se carga el registro guardado se muestra un indicador, para no escribir sobre datos viejos.function Root() {
   const { loading } = useRegistration();
   if (loading) {
     return (
@@ -26,7 +23,6 @@ function Root() {
     </NavigationContainer>
   );
 }
-
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -41,7 +37,6 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
-
 const styles = StyleSheet.create({
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, backgroundColor: colors.background },
   loadingText: { color: colors.muted },
