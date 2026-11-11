@@ -9,6 +9,7 @@ import SimulatorScreen from "../screens/SimulatorScreen";
 import EarningsScreen from "../screens/EarningsScreen";
 import IncomingRequestScreen from "../screens/IncomingRequestScreen";
 import TripInProgressScreen from "../screens/TripInProgressScreen";
+import PaymentSummaryScreen from '../screens/PaymentSummaryScreen';
 // [FASE 3 - Andrés] imports de IncomingRequestScreen y TripInProgressScreen
 // [FASE 3 - Vaner]  import de EarningsScreen
 // [FASE 4 - Eladio] import de PaymentSummaryScreen
@@ -37,7 +38,7 @@ function TripFlow() {
         component={TripInProgressScreen}
         options={{ gestureEnabled: false }}
       />
-      {/* [FASE 4 - Eladio] PaymentSummary */}
+      <TripStack.Screen name="PaymentSummary" component={PaymentSummaryScreen} options={{ gestureEnabled: false }} />
     </TripStack.Navigator>
   );
 }
