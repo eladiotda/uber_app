@@ -17,20 +17,32 @@ import PhotoField from "../components/PhotoField";
 import { GENDERS, LANGUAGES, LIMITS } from "../config/catalogs";
 import { hasErrors, latestAdultBirthDate } from "../utils/validations";
 import { colors, spacing } from "../theme/colors";
-
 const onlyDigits = (text) => text.replace(/\D/g, "");
-
-export default function PersonalScreen({ navigation }) {
-  const { personal, errors, revealed, errorFor, updatePersonal, revealErrors } =
-    useRegistration();
+// mode = 'register' (pestaña 1) o 'profile' (editar desde Perfil y configuración).
+export default function PersonalScreen({ navigation, mode = "register" }) {
+  const {
+    personal,
+    errors,
+    revealed,
+    errorFor,
+    updatePersonal,
+    revealErrors,
+    save,
+    saving,
+    saveError,
+  } = useRegistration();
+  const isProfile = mode === "profile";
   const error = (field) => errorFor("personal", field);
-
   // "Continuar" siempre deja avanzar, pero antes muestra los errores pendientes de esta pestaña.
-  const goNext = () => {
+  const goNext = async () => {
     revealErrors("personal");
-    navigation.navigate("Vehicle");
+    if (!isProfile) {
+      navigation.navigate("Vehicle");
+      return;
+    }
+    // En Perfil: guarda los cambios en Firestore y vuelve.
+    if (await save()) navigation.goBack();
   };
-
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -40,13 +52,13 @@ export default function PersonalScreen({ navigation }) {
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={styles.title}>Cuéntanos quién eres</Text>
+        <Text style={styles.title}>
+          {isProfile ? "Tus datos personales" : "Cuéntanos quién eres"}
+        </Text>
         <Text style={styles.subtitle}>Todos los campos son obligatorios.</Text>
-
         {revealed.personal && hasErrors(errors.personal) ? (
           <Banner tone="danger">Revisa los campos marcados en rojo.</Banner>
         ) : null}
-
         <PhotoField
           label="Foto de perfil"
           shape="round"
@@ -54,7 +66,6 @@ export default function PersonalScreen({ navigation }) {
           onChange={(uri) => updatePersonal("photo", uri)}
           error={error("photo")}
         />
-
         <TextField
           label="Nombre completo"
           value={personal.fullName}
@@ -65,7 +76,6 @@ export default function PersonalScreen({ navigation }) {
           hint={`${personal.fullName.length}/${LIMITS.nameMax} · solo letras y espacios`}
           error={error("fullName")}
         />
-
         <TextField
           label="Documento de identidad"
           value={personal.documentId}
@@ -77,7 +87,6 @@ export default function PersonalScreen({ navigation }) {
           placeholder="Entre 6 y 10 dígitos"
           error={error("documentId")}
         />
-
         <TextField
           label="Número de celular"
           value={personal.phone}
@@ -87,7 +96,6 @@ export default function PersonalScreen({ navigation }) {
           placeholder="3001234567"
           error={error("phone")}
         />
-
         <DateField
           label="Fecha de nacimiento"
           value={personal.birthDate}
@@ -95,7 +103,6 @@ export default function PersonalScreen({ navigation }) {
           maximumDate={latestAdultBirthDate()}
           error={error("birthDate")}
         />
-
         <SelectField
           label="Género"
           value={personal.gender}
@@ -103,7 +110,6 @@ export default function PersonalScreen({ navigation }) {
           onChange={(value) => updatePersonal("gender", value)}
           error={error("gender")}
         />
-
         <TextField
           label="Correo electrónico"
           value={personal.email}
@@ -114,7 +120,6 @@ export default function PersonalScreen({ navigation }) {
           placeholder="nombre@correo.com"
           error={error("email")}
         />
-
         <SelectField
           label="Idioma"
           value={personal.language}
@@ -122,13 +127,19 @@ export default function PersonalScreen({ navigation }) {
           onChange={(value) => updatePersonal("language", value)}
           error={error("language")}
         />
-
-        <Button title="Continuar a Vehículo" onPress={goNext} />
+        {isProfile && saveError ? (
+          <Banner tone="danger">{saveError}</Banner>
+        ) : null}
+        <Button
+          title={isProfile ? "Guardar cambios" : "Continuar a Vehículo"}
+          onPress={goNext}
+          loading={isProfile && saving}
+          disabled={isProfile && saving}
+        />
       </ScrollView>
     </KeyboardAvoidingView>
   );
 }
-
 const styles = StyleSheet.create({
   container: { padding: spacing, paddingBottom: spacing * 3 },
   title: { fontSize: 22, fontWeight: "700", color: colors.text },
