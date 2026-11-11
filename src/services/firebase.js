@@ -49,3 +49,8 @@ export async function getDriverId() {
   if (!auth.currentUser) await FirebaseAuth.signInAnonymously(auth);
   return auth.currentUser.uid;
 }
+
+export async function signOutDriver() {
+  const { auth } = getFirebase();
+  await FirebaseAuth.signOut(auth);
+}
