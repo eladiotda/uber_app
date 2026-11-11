@@ -4,20 +4,17 @@ export const GENDERS = [
   { value: "non_binary", label: "No binario" },
   { value: "not_say", label: "Prefiero no decirlo" },
 ];
-
 // Mismo selector de idioma que la app del pasajero.
 export const LANGUAGES = [
   { value: "es", label: "Español" },
   { value: "en", label: "English" },
 ];
-
 // Mismas categorías que elige el pasajero.
 export const CATEGORIES = [
   { value: "economy", label: "Económico" },
   { value: "xl", label: "XL" },
   { value: "premium", label: "Premium" },
 ];
-
 export const VEHICLE_COLORS = [
   { value: "white", label: "Blanco" },
   { value: "black", label: "Negro" },
@@ -29,7 +26,6 @@ export const VEHICLE_COLORS = [
   { value: "yellow", label: "Amarillo" },
   { value: "other", label: "Otro" },
 ];
-
 export const LIMITS = {
   nameMax: 50,
   brandMax: 30,
@@ -40,3 +36,17 @@ export const LIMITS = {
   xlMinCapacity: 6,
   maxCapacity: 16,
 };
+// Categorías de licencia de conducción en Colombia (B = servicio particular, C = servicio público).
+export const LICENSE_CATEGORIES = [
+  { value: "B1", label: "B1 — Automóvil particular" },
+  { value: "B2", label: "B2 — Camioneta / microbús particular" },
+  { value: "B3", label: "B3 — Vehículo pesado particular" },
+  { value: "C1", label: "C1 — Automóvil servicio público" },
+  { value: "C2", label: "C2 — Camioneta / microbús servicio público" },
+  { value: "C3", label: "C3 — Vehículo pesado servicio público" },
+];
+// Métodos de pago de un viaje (PDF sección 6).
+export const PAYMENT_METHODS = [
+  { value: "mercadopago", label: "Mercado Pago" },
+  { value: "cash", label: "Efectivo" },
+];

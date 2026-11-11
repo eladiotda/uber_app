@@ -91,11 +91,10 @@ export function SelectField({ label, error, value, options, onChange, placeholde
 
 // Selector de fecha. Guarda el valor como texto 'AAAA-MM-DD'.
 // Android: diálogo nativo. iOS: rueda en un modal. Web: se escribe la fecha.
-export function DateField({ label, error, value, onChange, maximumDate }) {
+export function DateField({ label, error, value, onChange, maximumDate, minimumDate }) {
     const [iosOpen, setIosOpen] = useState(false);
     const [draft, setDraft] = useState(new Date());
-    const current = parseISODate(value) || maximumDate || new Date();
-
+    const current = parseISODate(value) || maximumDate || minimumDate || new Date();
     if (Platform.OS === 'web') {
         return (
             <TextField
@@ -108,13 +107,13 @@ export function DateField({ label, error, value, onChange, maximumDate }) {
             />
         );
     }
-
     const openPicker = () => {
         if (Platform.OS === 'android') {
             DateTimePickerAndroid.open({
                 value: current,
                 mode: 'date',
                 maximumDate,
+                minimumDate,
                 onValueChange: (_event, date) => onChange(toISODate(date)),
             });
         } else {
@@ -122,7 +121,6 @@ export function DateField({ label, error, value, onChange, maximumDate }) {
             setIosOpen(true);
         }
     };
-
     return (
         <Field label={label} error={error}>
             <Pressable
@@ -133,7 +131,6 @@ export function DateField({ label, error, value, onChange, maximumDate }) {
                 <Text style={value ? styles.value : styles.placeholder}>{value || 'Seleccionar fecha'}</Text>
                 <Text style={styles.chevron}>📅</Text>
             </Pressable>
-
             <Modal visible={iosOpen} transparent animationType="slide" onRequestClose={() => setIosOpen(false)}>
                 <View style={styles.backdrop}>
                     <View style={styles.sheet}>
@@ -144,6 +141,7 @@ export function DateField({ label, error, value, onChange, maximumDate }) {
                             display="spinner"
                             themeVariant="light"
                             maximumDate={maximumDate}
+                            minimumDate={minimumDate}
                             onValueChange={(_event, date) => setDraft(date)}
                         />
                         <Button
@@ -159,6 +157,7 @@ export function DateField({ label, error, value, onChange, maximumDate }) {
         </Field>
     );
 }
+
 
 export function Button({ title, onPress, kind = 'primary', disabled = false, loading = false }) {
     const isPrimary = kind === 'primary';
