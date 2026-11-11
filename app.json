@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "uber_app",
+    "name": "UberClone Conductor",
     "slug": "uber_app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -21,7 +21,26 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Usamos tu ubicación para mostrarte en el mapa y enviarte solicitudes de viaje cercanas."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Usamos la cámara para tu foto de perfil, la del vehículo y la de tus documentos.",
+          "photosPermission": "Usamos la galería para elegir tus fotos y documentos."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#16A34A"
+        }
+      ]
     ]
   }
 }
