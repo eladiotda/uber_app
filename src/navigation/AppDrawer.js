@@ -1,7 +1,4 @@
-// Navegación combinada (PDF sección 1.8):
-//  Drawer -> perfil, historial, ganancias y configuración
-//  Stack  -> flujo del viaje (Inicio -> Solicitud -> Viaje en curso -> Cobro)
-// VERSIÓN FASE 2: en las fases 3 y 4 cada integrante agrega aquí las líneas de sus pantallas.
+
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/HomeScreen";
@@ -10,11 +7,8 @@ import EarningsScreen from "../screens/EarningsScreen";
 import IncomingRequestScreen from "../screens/IncomingRequestScreen";
 import TripInProgressScreen from "../screens/TripInProgressScreen";
 import PaymentSummaryScreen from '../screens/PaymentSummaryScreen';
-// [FASE 3 - Andrés] imports de IncomingRequestScreen y TripInProgressScreen
-// [FASE 3 - Vaner]  import de EarningsScreen
-// [FASE 4 - Eladio] import de PaymentSummaryScreen
-// [FASE 4 - Vaner]  imports de HistoryScreen y TripDetailScreen
-// [FASE 4 - Andrés] imports de ProfileScreen, PersonalScreen, VehicleScreen y DocumentsScreen
+import HistoryScreen from '../screens/HistoryScreen';
+import TripDetailScreen from '../screens/TripDetailScreen';
 import { colors } from "../theme/colors";
 const Drawer = createDrawerNavigator();
 const TripStack = createNativeStackNavigator();
@@ -42,7 +36,17 @@ function TripFlow() {
     </TripStack.Navigator>
   );
 }
-// [FASE 4 - Vaner]  function HistoryFlow() { ... }
+function HistoryFlow() {
+  return (
+    <HistoryStack.Navigator screenOptions={stackOptions}>
+      <HistoryStack.Screen name="HistoryList" component={HistoryScreen} options={{ headerShown: false }} />
+      <HistoryStack.Screen name="TripDetail" component={TripDetailScreen} options={{ title: 'Detalle del viaje' }} />
+    </HistoryStack.Navigator>
+  );
+}
+
+const HistoryStack = createNativeStackNavigator();
+
 // [FASE 4 - Andrés] function ProfileFlow() { ... }
 export default function AppDrawer() {
   return (
@@ -54,7 +58,7 @@ export default function AppDrawer() {
       }}
     >
       <Drawer.Screen name="Inicio" component={TripFlow} />
-      {/* [FASE 4 - Vaner]  Historial */}
+      <Drawer.Screen name="Historial" component={HistoryFlow} />
       <Drawer.Screen name="Ganancias" component={EarningsScreen} />
       {/* [FASE 4 - Andrés] Perfil */}
       {/* Solo en desarrollo: crea solicitudes de prueba (no existe la app del pasajero). */}
