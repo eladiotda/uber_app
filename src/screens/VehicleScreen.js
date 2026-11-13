@@ -36,8 +36,18 @@ export default function VehicleScreen({ navigation, mode = 'register' }) {
     navigation.navigate('Personal');
   };
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+    // En Android (edge-to-edge, SDK 58) la pantalla no se encoge con el teclado:
+    // "padding" en ambas plataformas evita que el teclado tape los campos de abajo.
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior="padding"
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+    >
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
+      >
         <Text style={styles.title}>Tu vehículo</Text>
         <Text style={styles.subtitle}>Todos los campos son obligatorios.</Text>
         {revealed.vehicle && hasErrors(errors.vehicle) ? (

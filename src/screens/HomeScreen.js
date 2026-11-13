@@ -52,6 +52,8 @@ export default function HomeScreen({ navigation }) {
     enabled: isFocused && available && !activeTrip,
   });
   const { pushError } = usePushNotifications({ driverId, enabled: true });
+  // En Expo Go no existe el push: ese aviso no se muestra.
+  const showPushWarning = __DEV__ && pushError && !/Expo Go/i.test(pushError);
   // Si hay un viaje abierto (por ejemplo, se cerró la app), vuelve a su pantalla.
   useEffect(() => {
     const screen = activeTrip && SCREEN_FOR_STATUS[activeTrip.status];
@@ -152,7 +154,7 @@ export default function HomeScreen({ navigation }) {
               {message}
             </Banner>
           ))}
-        {pushError && __DEV__ ? (
+        {showPushWarning ? (
           <Banner tone="warning">Notificaciones: {pushError}</Banner>
         ) : null}
       </SafeAreaView>

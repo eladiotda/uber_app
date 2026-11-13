@@ -75,13 +75,17 @@ export default function DocumentsScreen({ navigation, mode = "register" }) {
     if (ok && isProfile) navigation.goBack();
   };
   return (
+    // En Android (edge-to-edge, SDK 58) la pantalla no se encoge con el teclado:
+    // "padding" en ambas plataformas evita que el teclado tape los campos de abajo.
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      behavior="padding"
+      keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
     >
       <ScrollView
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
       >
         {!isProfile ? (
           <>

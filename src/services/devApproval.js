@@ -8,8 +8,15 @@ export async function requestDevApproval() {
   const idToken = await auth.currentUser.getIdToken(); // el backend verifica quién hace la petición
   const response = await fetch(`${BACKEND_URL}/dev/approve-driver`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${idToken}`,
+      'ngrok-skip-browser-warning': '1', // evita la página de advertencia de ngrok gratis
+    },
   });
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.error || 'No se pudo aprobar la cuenta.');
+  if (!response.ok) {
+    // Si el backend está apagado, ngrok responde 502 sin JSON: se muestra el código para saber la causa.
+    throw new Error(data.error || `No se pudo aprobar la cuenta (HTTP ${response.status}). ¿Está encendido el backend?`);
+  }
 }
