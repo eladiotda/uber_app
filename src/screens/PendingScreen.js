@@ -1,12 +1,32 @@
+import { useCallback, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRegistration } from '../context/RegistrationContext';
-import { Banner } from '../components/FormControls';
+import { Banner, Button } from '../components/FormControls';
+import { requestDevApproval } from '../services/devApproval';
 import { colors, radius, spacing } from '../theme/colors';
 // Cuenta enviada y Pendiente de aprobación (PDF sección 2).
-// Para simular la aprobación: Firestore -> drivers/{uid} -> cambiar status a "approved".
+// Para simular la aprobación: botón "Aprobar cuenta" (solo en desarrollo, vía backend)
+// o en Firestore -> drivers/{uid} -> cambiar status a "approved".
 // La app lo detecta en tiempo real (watchDriver) y abre la pantalla de Inicio.
 export default function PendingScreen() {
   const { record, personal, vehicle, driverId } = useRegistration();
+  const [approving, setApproving] = useState(false);
+  const [approveError, setApproveError] = useState('');
+
+  // AI-assisted: see docs/AI_LOG.md #N
+  const handleApprove = useCallback(async () => {
+    setApproving(true);
+    setApproveError('');
+    try {
+      await requestDevApproval();
+      // No se navega a mano: watchDriver ve status "approved" y cambia de pantalla.
+    } catch (error) {
+      setApproveError(error.message);
+    } finally {
+      setApproving(false);
+    }
+  }, []);
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Pendiente de aprobación</Text>
@@ -25,9 +45,14 @@ export default function PendingScreen() {
         </Text>
       </View>
       {__DEV__ ? (
-        <Banner tone="warning">
-          Modo pruebas: en la consola de Firebase abre drivers/{driverId} y cambia status a "approved".
-        </Banner>
+        <View style={styles.devBox}>
+          <Banner tone="warning">
+            Modo pruebas: aprueba la cuenta con el botón, o en la consola de Firebase abre drivers/{driverId} y cambia
+            status a "approved".
+          </Banner>
+          <Button title="Aprobar cuenta (pruebas)" onPress={handleApprove} loading={approving} />
+          {approveError ? <Text style={styles.error}>{approveError}</Text> : null}
+        </View>
       ) : null}
     </ScrollView>
   );
@@ -41,4 +66,6 @@ const styles = StyleSheet.create({
   car: { width: 130, height: 90, borderRadius: radius, backgroundColor: colors.border },
   strong: { fontSize: 16, fontWeight: '700', color: colors.text },
   detail: { fontSize: 14, color: colors.muted },
+  devBox: { gap: 8 },
+  error: { fontSize: 13, color: colors.danger },
 });

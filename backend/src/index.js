@@ -1,8 +1,3 @@
-// Backend de UberClone conductor (Node.js + Express). PDF sección 4.
-// - Crea la preferencia de pago de Mercado Pago con la llave secreta (nunca va en la app).
-// - Recibe el webhook de Mercado Pago y actualiza el viaje: paymentStatus, paymentId y status 'paid'.
-// - Envía la notificación FCM cuando se crea una solicitud de viaje.
-// Se usa Express y no Cloud Functions porque Cloud Functions exige el plan Blaze (de pago).
 import { readFileSync } from 'node:fs';
 import express from 'express';
 import { MercadoPagoConfig, Payment, Preference } from 'mercadopago';
@@ -68,6 +63,30 @@ app.post('/payments/preference', async (req, res) => {
 // Página a la que vuelve el navegador después de pagar.
 app.get('/payments/return', (req, res) => {
   res.send(`<h2>Pago ${req.query.status || 'procesado'}</h2><p>Ya puedes cerrar esta ventana y volver a la app.</p>`);
+});
+// ---------- Solo pruebas: aprobar al conductor desde la app ----------
+// AI-assisted: see docs/AI_LOG.md #N
+// Simula la revisión manual (PDF sección 2). Se activa con ALLOW_DEV_APPROVAL=true en backend/.env.
+// Solo aprueba al conductor dueño del token, y solo si está en "pending".
+app.post('/dev/approve-driver', async (req, res) => {
+  if (process.env.ALLOW_DEV_APPROVAL !== 'true') {
+    return res.status(403).json({ error: 'La aprobación desde la app está desactivada en el backend.' });
+  }
+  try {
+    const idToken = (req.headers.authorization || '').replace('Bearer ', '');
+    const { uid } = await getAuth().verifyIdToken(idToken);
+    const ref = db.collection('drivers').doc(uid);
+    const snapshot = await ref.get();
+    if (!snapshot.exists) return res.status(404).json({ error: 'No existe el registro del conductor.' });
+    if (snapshot.get('status') !== 'pending') {
+      return res.status(400).json({ error: 'La cuenta no está pendiente de aprobación.' });
+    }
+    await ref.update({ status: 'approved', approvedAt: FieldValue.serverTimestamp() });
+    res.json({ ok: true });
+  } catch (error) {
+    console.error('Error aprobando conductor:', error.message);
+    res.status(401).json({ error: 'No se pudo verificar la sesión.' });
+  }
 });
 // ---------- 2) Webhook de Mercado Pago ----------
 const STATUS_MAP = {
