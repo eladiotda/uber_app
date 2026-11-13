@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
+import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import { saveFcmToken } from '../services/driverRepository';
+
+// Expo Go (SDK 53+) no soporta push en Android: ahí se omite todo el registro.
+const isExpoGo = Constants.executionEnvironment === 'storeClient' || Constants.appOwnership === 'expo';
 
 // Con la app abierta, la notificación también se muestra.
 Notifications.setNotificationHandler({
@@ -35,7 +39,8 @@ export function usePushNotifications({ driverId, enabled }) {
   const [pushError, setPushError] = useState('');
 
   useEffect(() => {
-    if (!enabled || !driverId || Platform.OS === 'web') return undefined;
+    // En Expo Go no hay token FCM: la app funciona con onSnapshot en primer plano.
+    if (!enabled || !driverId || Platform.OS === 'web' || isExpoGo) return undefined;
     let active = true;
 
     (async () => {
@@ -55,7 +60,8 @@ export function usePushNotifications({ driverId, enabled }) {
         setPushError('');
       }
     })().catch((error) => {
-      // En Expo Go no hay token FCM: la app sigue funcionando con onSnapshot en primer plano.
+      // En Expo Go el push no existe: no se muestra como error.
+      if (/Expo Go/i.test(error?.message || '')) return;
       if (active) setPushError(error.message);
     });
 
