@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
 import PersonalScreen from "../screens/PersonalScreen";
 import VehicleScreen from "../screens/VehicleScreen";
 import DocumentsScreen from "../screens/DocumentsScreen";
@@ -9,7 +10,7 @@ import { colors } from "../theme/colors";
 
 const Tab = createBottomTabNavigator();
 
-// Ícono de la pestaña: número del paso o ✓ cuando la sección está completa y válida.
+// Ícono de la pestaña: número del paso o ícono de check cuando la sección está completa y válida.
 function StepIcon({ step, done, color }) {
   return (
     <View
@@ -19,14 +20,33 @@ function StepIcon({ step, done, color }) {
         done && styles.iconDone,
       ]}
     >
-      <Text style={[styles.iconText, { color: done ? "#fff" : color }]}>
-        {done ? "✓" : step}
-      </Text>
+      {done ? (
+        <Ionicons name="checkmark" size={14} color="#fff" />
+      ) : (
+        <Text style={[styles.iconText, { color }]}>{step}</Text>
+      )}
     </View>
   );
 }
 
-export default function RegistrationTabs() {
+// AI-assisted: see docs/AI_LOG.md #N
+// Botón del encabezado para volver a la pantalla de Bienvenida (lo escrito no se pierde).
+function BackToWelcome({ onPress }) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel="Volver a la bienvenida"
+      onPress={onPress}
+      hitSlop={12}
+      style={({ pressed }) => [styles.back, pressed && { opacity: 0.6 }]}
+    >
+      <Ionicons name="chevron-back" size={22} color={colors.primary} />
+      <Text style={styles.backText}>Inicio</Text>
+    </Pressable>
+  );
+}
+
+export default function RegistrationTabs({ onBack }) {
   const { errors, revealed } = useRegistration();
   const personalDone = !hasErrors(errors.personal);
   const vehicleDone = !hasErrors(errors.vehicle);
@@ -39,6 +59,7 @@ export default function RegistrationTabs() {
         tabBarInactiveTintColor: colors.muted,
         headerTitleStyle: { fontWeight: "700" },
         sceneStyle: { backgroundColor: colors.background },
+        headerLeft: onBack ? () => <BackToWelcome onPress={onBack} /> : undefined,
       }}
     >
       <Tab.Screen
@@ -89,4 +110,6 @@ const styles = StyleSheet.create({
   },
   iconDone: { backgroundColor: colors.accent },
   iconText: { fontSize: 12, fontWeight: "700" },
+  back: { flexDirection: "row", alignItems: "center", paddingHorizontal: 12, paddingVertical: 8 },
+  backText: { fontSize: 16, fontWeight: "600", color: colors.primary },
 });

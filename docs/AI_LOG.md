@@ -165,3 +165,23 @@ Registro de cada interacción con herramientas de IA en el proyecto UberClone (v
 - Archivos y commit: `docs/AI_LOG.md` — [PENDIENTE]
 - Verificación: La búsqueda en el código no encontró imports desde `../utils/validation` en singular. [PENDIENTE] Ejecutar la aplicación para confirmar que no quedan errores de resolución de módulos.
 - Aprendizaje: [PENDIENTE: lo escribe el integrante]
+
+---
+
+### Entrada #5
+- Fecha: 2026-11-11
+- Integrante: eladiotda
+- Herramienta: Claude Code (extensión de VS Code) — Claude Opus 5 (claude-opus-5)
+- Objetivo: Diagnosticar las posibles causas de la alerta amarilla que aparece en la pantalla Inicio del conductor: "Notificaciones: Call to function 'ExpoNotificationChannelManager.setNotificationChannelAsync' has been rejected. → Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.Class java.lang.Object.getClass()' on a null object reference".
+- Prompt:
+  ```text
+  dame posibles causa de esta alerta :
+  [captura de pantalla del celular con la alerta amarilla en la pantalla Inicio]
+
+  lleva a vitacora, pregunta
+  ```
+- Resumen de la respuesta: Se revisó `src/hooks/usePushNotifications.js` (línea 25) y el código nativo de `node_modules/expo-notifications` (`NotificationChannelManagerModule.kt`, `NotificationsChannelProviderAccessor.kt`, `AndroidXNotificationsChannelsProvider.kt`). La causa más probable es que la app se está abriendo en **Expo Go**: Expo Go incluye el módulo `ExpoNotificationChannelManager` pero no el módulo `NotificationsChannelsProvider` del que depende, así que `registry.getModule("NotificationsChannelsProvider") as NotificationsChannelsProvider` recibe `null` y lanza el NullPointerException (el mensaje aparece como `getClass()` porque el build de release elimina el texto del chequeo de nulos de Kotlin). Causas secundarias posibles: ejecutar un development build viejo construido antes de agregar `expo-notifications`; y, de forma independiente, falta `google-services.json` y la clave `android.googleServicesFile` en `app.json`, lo que hará fallar después `getDevicePushTokenAsync()`. Documentación consultada: https://docs.expo.dev/versions/v58.0.0/sdk/notifications/ (indica que las notificaciones push no están disponibles en Expo Go en Android desde el SDK 53 y que se requiere un development build) y el reporte https://github.com/dancastellani/innerenlightenment/issues/90 con el mismo error en Expo Go.
+- Qué se usó / modificó / descartó: No se modificó código de la aplicación. Solo se agregó esta entrada a `docs/AI_LOG.md`. Se descartó por ahora cambiar `usePushNotifications.js`, a la espera de confirmar en qué entorno se tomó la captura.
+- Archivos y commit: `docs/AI_LOG.md` — [PENDIENTE]
+- Verificación: Lectura del código nativo de `expo-notifications@58.1.8` en `node_modules`, donde se confirmó que `AndroidXNotificationsChannelsProvider` se registra como módulo aparte en `expo-module.config.json` y que el acceso a ese módulo usa un cast no nulo. [PENDIENTE] Confirmar el entorno en el dispositivo (por ejemplo con `Constants.executionEnvironment`: `storeClient` = Expo Go) y volver a probar en un development build con `google-services.json` configurado.
+- Aprendizaje: [PENDIENTE: lo escribe el integrante]
